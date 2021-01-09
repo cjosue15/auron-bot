@@ -48,11 +48,11 @@ const createTokenAuth = async () => {
     }
 };
 
-const subscribetoWebhook = async (token = '') => {
+const subscribetoWebhook = async (authToken = '') => {
     const headers = {
         'Content-Type': 'application/json',
         'Client-ID': process.env.CLIENT_ID,
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${authToken || token.access_token}`,
     };
 
     try {

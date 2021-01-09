@@ -18,9 +18,10 @@ router.post('/twitch/live', (req, res) => {
         refreshTokens();
     } else {
         const data = req.body.data[0] || null;
-        if (!preserveData) {
-            console.log(data);
-        }
+        console.log(preserveData);
+        console.log(data);
+        // if (!preserveData) {
+        // }
         savePreserveData(data);
     }
 
