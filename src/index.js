@@ -11,8 +11,8 @@ const token = require('../data/token.json');
 const { createTokenAuth, subscribetoWebhook } = require('./utils/utils');
 
 if (!token.access_token) {
-    createTokenAuth().then((_) => {
-        subscribetoWebhook();
+    createTokenAuth().then((data) => {
+        subscribetoWebhook(data.access_token);
     });
 }
 

@@ -1,6 +1,7 @@
 const express = require('express');
 const { refreshTokens, isInvalidateSomeToken, savePreserveData } = require('../utils/utils');
 const router = express.Router();
+const preserveData = require('../../data/preserveData.json');
 
 router.get('/', (req, res) => {
     res.send({ response: 'Server is up and running.' }).status(200);
@@ -17,7 +18,9 @@ router.post('/twitch/live', (req, res) => {
         refreshTokens();
     } else {
         const data = req.body.data[0] || null;
-        console.log(data);
+        if (!preserveData) {
+            console.log(data);
+        }
         savePreserveData(data);
     }
 

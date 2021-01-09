@@ -14,7 +14,6 @@ const createTokenAuth = async () => {
     // )
     //     .then((response) => response.json())
     //     .then((data) => {
-    //         console.log(data);
     //         const dataToSave = {
     //             ...data,
     //             expires_in: dayjs().add(data.expires_in, 's').format(),
@@ -42,16 +41,18 @@ const createTokenAuth = async () => {
         };
 
         await fs.writeFileSync('./data/token.json', JSON.stringify(dataToSave));
+
+        return dataToSave;
     } catch (error) {
         console.log(error.message);
     }
 };
 
-const subscribetoWebhook = async () => {
+const subscribetoWebhook = async (token = '') => {
     const headers = {
         'Content-Type': 'application/json',
         'Client-ID': process.env.CLIENT_ID,
-        Authorization: `Bearer ${token.access_token}`,
+        Authorization: `Bearer ${token}`,
     };
 
     try {
@@ -78,6 +79,7 @@ const subscribetoWebhook = async () => {
 
         await fs.writeFileSync('./data/responseSuscribe.json', JSON.stringify(dataToSave));
     } catch (error) {
+        console.log('error');
         console.log(error.message);
     }
 };
