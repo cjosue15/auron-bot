@@ -1,5 +1,5 @@
 const express = require('express');
-const { refreshTokens, isInvalidateSomeToken, savePreserveData } = require('../utils/utils');
+const { refreshTokens, isInvalidateSomeToken, savePreserveData, tweetNotify } = require('../utils/utils');
 const router = express.Router();
 const preserveData = require('../../data/dataStream.json');
 
@@ -18,10 +18,9 @@ router.post('/twitch/live', (req, res) => {
         refreshTokens();
     } else {
         const data = req.body.data[0] || null;
-        console.log(preserveData);
-        console.log(data);
-        // if (!preserveData) {
-        // }
+        if (!preserveData) {
+            tweetNotify(data);
+        }
         savePreserveData(data);
     }
 

@@ -1,8 +1,12 @@
 const fetch = require('node-fetch');
 const dotenv = require('dotenv');
+dotenv.config();
 const fs = require('fs');
 const dayjs = require('dayjs');
-dotenv.config();
+
+const Twit = require('twit');
+const config = require('./acces.js');
+const T = new Twit(config);
 
 const token = require('../../data/token.json');
 const responseSuscribe = require('../../data/responseSuscribe.json');
@@ -94,6 +98,8 @@ const refreshTokens = () => {
 
     if (dayjs().format() >= responseSuscribe.expires_in) {
         subscribetoWebhook();
+        // perhaps here i have to call other function to set if streamer is on live or not
+        // save again data of the streamer
     }
 };
 
@@ -109,10 +115,24 @@ const savePreserveData = async (data) => {
     }
 };
 
+const tweetNotify = async ({ game_name, title }) => {
+    try {
+        const tweet = {
+            status: `Auronplay ha comenzado a transmitir.\nTitulo: ${title}\nJuego: ${game_name}\nPuedes verlo aqui 👉 https://www.twitch.tv/auronplay`,
+        };
+
+        await T.post('statuses/update', tweet);
+    } catch (error) {
+        console.log('error en tweet ' + error);
+        throw new Error(error.message);
+    }
+};
+
 module.exports = {
     createTokenAuth,
     subscribetoWebhook,
     refreshTokens,
     isInvalidateSomeToken,
     savePreserveData,
+    tweetNotify,
 };
