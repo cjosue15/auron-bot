@@ -1,7 +1,7 @@
 const express = require('express');
 const { refreshTokens, isInvalidateSomeToken, savePreserveData } = require('../utils/utils');
 const router = express.Router();
-const preserveData = require('../../data/preserveData.json');
+const preserveData = require('../../data/dataStream.json');
 
 router.get('/', (req, res) => {
     res.send({ response: 'Server is up and running.' }).status(200);
