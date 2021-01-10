@@ -48,7 +48,7 @@ const subscribetoWebhook = async () => {
                 'hub.mode': 'subscribe',
                 'hub.callback': 'http://159.203.167.191/live',
                 'hub.topic': `https://api.twitch.tv/helix/streams?user_id=${process.env.STREAMER_ID}`,
-                'hub.lease_seconds': '864000',
+                'hub.lease_seconds': process.env.SECONDS_SUSCRIBE,
                 'hub.secret': process.env.CLIENT_SECRET,
             }),
             headers: headers,
@@ -60,7 +60,7 @@ const subscribetoWebhook = async () => {
 
         const dataToSave = {
             status: response.status,
-            expires_in: dayjs().add(864000, 's').format(),
+            expires_in: dayjs().add(Number(process.env.SECONDS_SUSCRIBE), 's').format(),
         };
 
         await fs.writeFileSync('./data/responseSuscribe.json', JSON.stringify(dataToSave));
