@@ -8,25 +8,7 @@ const Twit = require('twit');
 const config = require('./acces.js');
 const T = new Twit(config);
 
-const token = require('../../data/token.json');
-const responseSuscribe = require('../../data/responseSuscribe.json');
-
 const createTokenAuth = async () => {
-    // return fetch(
-    //     `https://id.twitch.tv/oauth2/token?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}&grant_type=client_credentials`,
-    //     { method: 'POST', body: {} }
-    // )
-    //     .then((response) => response.json())
-    //     .then((data) => {
-    //         const dataToSave = {
-    //             ...data,
-    //             expires_in: dayjs().add(data.expires_in, 's').format(),
-    //         };
-
-    //         fs.writeFileSync('./data/token.json', JSON.stringify(dataToSave));
-    //     })
-    //     .catch((error) => console.log(error));
-
     try {
         const response = await fetch(
             `https://id.twitch.tv/oauth2/token?client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}&grant_type=client_credentials`,
@@ -52,11 +34,11 @@ const createTokenAuth = async () => {
     }
 };
 
-const subscribetoWebhook = async (authToken = '') => {
+const subscribetoWebhook = async () => {
     const headers = {
         'Content-Type': 'application/json',
         'Client-ID': process.env.CLIENT_ID,
-        Authorization: `Bearer ${authToken || token.access_token}`,
+        Authorization: `Bearer ${readTokenAuth().access_token}`,
     };
 
     try {
@@ -64,7 +46,7 @@ const subscribetoWebhook = async (authToken = '') => {
             method: 'post',
             body: JSON.stringify({
                 'hub.mode': 'subscribe',
-                'hub.callback': 'https://auron-bot.herokuapp.com/twitch/live',
+                'hub.callback': 'http://159.203.167.191/live',
                 'hub.topic': `https://api.twitch.tv/helix/streams?user_id=${process.env.STREAMER_ID}`,
                 'hub.lease_seconds': '864000',
                 'hub.secret': process.env.CLIENT_SECRET,
@@ -91,12 +73,12 @@ const subscribetoWebhook = async (authToken = '') => {
 const refreshTokens = () => {
     // refresh auth token
 
-    if (dayjs().format() >= token.expires_in) {
+    if (dayjs().format() >= readTokenAuth().expires_in) {
         // it's mean token need refresh
         createTokenAuth();
     }
 
-    if (dayjs().format() >= responseSuscribe.expires_in) {
+    if (dayjs().format() >= readResponseSuscribe().expires_in) {
         subscribetoWebhook();
         // perhaps here i have to call other function to set if streamer is on live or not
         // save again data of the streamer
@@ -104,15 +86,11 @@ const refreshTokens = () => {
 };
 
 const isInvalidateSomeToken = () => {
-    return dayjs().format() >= token.expires_in || dayjs().format() >= responseSuscribe.expires_in;
+    return dayjs().format() >= readTokenAuth().expires_in || dayjs().format() >= readResponseSuscribe().expires_in;
 };
 
-const savePreserveData = async (data) => {
-    try {
-        await fs.writeFileSync('./data/dataStream.json', JSON.stringify(data));
-    } catch (error) {
-        console.log(error);
-    }
+const savePreserveData = (data) => {
+    fs.writeFileSync('./data/dataStream.json', JSON.stringify(data));
 };
 
 const tweetNotify = async ({ game_name, title }) => {
@@ -128,6 +106,14 @@ const tweetNotify = async ({ game_name, title }) => {
     }
 };
 
+const readTokenAuth = () => {
+    return JSON.parse(fs.readFileSync('./data/token.json', { encoding: 'utf8', flag: 'r' }));
+};
+
+const readResponseSuscribe = () => {
+    return JSON.parse(fs.readFileSync('./data/responseSuscribe.json.json', { encoding: 'utf8', flag: 'r' }));
+};
+
 module.exports = {
     createTokenAuth,
     subscribetoWebhook,
@@ -135,4 +121,5 @@ module.exports = {
     isInvalidateSomeToken,
     savePreserveData,
     tweetNotify,
+    readTokenAuth,
 };

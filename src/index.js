@@ -6,9 +6,9 @@ const router = require('./routes/routes');
 app.use(express.json());
 app.use(router);
 
-const token = require('../data/token.json');
+const { createTokenAuth, subscribetoWebhook, readTokenAuth } = require('./utils/utils');
 
-const { createTokenAuth, subscribetoWebhook } = require('./utils/utils');
+const token = readTokenAuth();
 
 if (!token.access_token) {
     createTokenAuth().then((data) => {
