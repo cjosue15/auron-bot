@@ -22,7 +22,7 @@ router.post('/live', (req, res) => {
         const data = req.body.data[0] || null;
         if (!preserveData) {
             console.log('send tweet');
-            // tweetNotify(data);
+            tweetNotify(data);
         }
         savePreserveData(data);
     }

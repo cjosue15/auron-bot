@@ -111,7 +111,7 @@ const readTokenAuth = () => {
 };
 
 const readResponseSuscribe = () => {
-    return JSON.parse(fs.readFileSync('./data/responseSuscribe.json.json', { encoding: 'utf8', flag: 'r' }));
+    return JSON.parse(fs.readFileSync('./data/responseSuscribe.json', { encoding: 'utf8', flag: 'r' }));
 };
 
 module.exports = {
