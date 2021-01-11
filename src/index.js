@@ -15,13 +15,13 @@ createTokenAuth().then(() => {
     subscribetoWebhook();
 });
 
-setInterval(() => {
-    createTokenAuth();
-}, 4500000 * 1000);
+// setInterval(() => {
+//     createTokenAuth();
+// }, 4500000 * 1000);
 
-setInterval(() => {
-    subscribetoWebhook();
-}, process.env.SECONDS_SUSCRIBE * 1000);
+// setInterval(() => {
+//     subscribetoWebhook();
+// }, process.env.SECONDS_SUSCRIBE * 1000);
 
 app.listen(PORT, () => {
     console.log(`Server has started on PORT ${PORT}`);
