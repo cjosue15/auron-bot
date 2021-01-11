@@ -11,13 +11,17 @@ app.use(router);
 
 const { createTokenAuth, subscribetoWebhook, readTokenAuth } = require('./utils/utils');
 
-const token = readTokenAuth();
+// const token = readTokenAuth();
 
 // if (!token.access_token) {
 createTokenAuth().then(() => {
     subscribetoWebhook();
 });
 // }
+
+setInterval(() => {
+    subscribetoWebhook();
+}, process.env.SECONDS_SUSCRIBE * 1000);
 
 app.listen(PORT, () => {
     console.log(`Server has started on PORT ${PORT}`);

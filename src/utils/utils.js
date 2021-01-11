@@ -95,14 +95,19 @@ const savePreserveData = (data) => {
 
 const tweetNotify = async ({ game_name, title }) => {
     try {
+        const options = { screen_name: 'BotAuronplay', count: 1 };
+        const allTweets = await T.get('statuses/user_timeline', options);
+        const text = allTweets.data.length > 0 ? allTweets.data[0].text : '#0~';
+        const number = Number(text.match('\\#(.*)~')[1]);
         const tweet = {
-            status: `Auronplay ha comenzado a transmitir.\nTitulo: ${title}\nJuego: ${game_name}\nPuedes verlo aqui 👉 https://www.twitch.tv/auronplay`,
+            status: `Auronplay ha comenzado a transmitir. #${
+                number + 1
+            }~\nTitulo: ${title}\nJuego: ${game_name}\nPuedes verlo aqui 👉 https://www.twitch.tv/auronplay`,
         };
 
         await T.post('statuses/update', tweet);
     } catch (error) {
         console.log('error en tweet ' + error);
-        throw new Error(error.message);
     }
 };
 
