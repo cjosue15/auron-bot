@@ -9,15 +9,15 @@ app.use(morgan('combined'));
 app.use(express.json(format()));
 app.use(router);
 
-const { createTokenAuth, subscribetoWebhook, readTokenAuth } = require('./utils/utils');
+const { createTokenAuth, subscribetoWebhook } = require('./utils/utils');
 
-// const token = readTokenAuth();
-
-// if (!token.access_token) {
 createTokenAuth().then(() => {
     subscribetoWebhook();
 });
-// }
+
+setInterval(() => {
+    createTokenAuth();
+}, 4500000 * 1000);
 
 setInterval(() => {
     subscribetoWebhook();

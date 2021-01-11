@@ -1,5 +1,5 @@
 const express = require('express');
-const { refreshTokens, isInvalidateSomeToken, savePreserveData, tweetNotify } = require('../utils/utils');
+const { savePreserveData, tweetNotify } = require('../utils/utils');
 const router = express.Router();
 const fs = require('fs');
 
@@ -14,18 +14,14 @@ router.get('/live', (req, res) => {
 });
 
 router.post('/live', (req, res) => {
-    if (isInvalidateSomeToken()) {
-        refreshTokens();
-    } else {
-        const preserveData = JSON.parse(fs.readFileSync('./data/dataStream.json', { encoding: 'utf8', flag: 'r' }));
+    const preserveData = JSON.parse(fs.readFileSync('./data/dataStream.json', { encoding: 'utf8', flag: 'r' }));
 
-        const data = req.body.data[0] || null;
-        if (!preserveData) {
-            console.log('send tweet');
-            tweetNotify(data);
-        }
-        savePreserveData(data);
+    const data = req.body.data[0] || null;
+    if (!preserveData) {
+        console.log('send tweet');
+        tweetNotify(data);
     }
+    savePreserveData(data);
 
     res.send({ msg: 'ok' }).status(200);
 });

@@ -23,7 +23,7 @@ const createTokenAuth = async () => {
 
         const dataToSave = {
             ...data,
-            expires_in: dayjs().add(data.expires_in, 's').format(),
+            expires_in_date: dayjs().add(data.expires_in, 's').format(),
         };
 
         await fs.writeFileSync('./data/token.json', JSON.stringify(dataToSave));
@@ -70,25 +70,6 @@ const subscribetoWebhook = async () => {
     }
 };
 
-const refreshTokens = () => {
-    // refresh auth token
-
-    if (dayjs().format() >= readTokenAuth().expires_in) {
-        // it's mean token need refresh
-        createTokenAuth();
-    }
-
-    if (dayjs().format() >= readResponseSuscribe().expires_in) {
-        subscribetoWebhook();
-        // perhaps here i have to call other function to set if streamer is on live or not
-        // save again data of the streamer
-    }
-};
-
-const isInvalidateSomeToken = () => {
-    return dayjs().format() >= readTokenAuth().expires_in || dayjs().format() >= readResponseSuscribe().expires_in;
-};
-
 const savePreserveData = (data) => {
     fs.writeFileSync('./data/dataStream.json', JSON.stringify(data));
 };
@@ -115,15 +96,9 @@ const readTokenAuth = () => {
     return JSON.parse(fs.readFileSync('./data/token.json', { encoding: 'utf8', flag: 'r' }));
 };
 
-const readResponseSuscribe = () => {
-    return JSON.parse(fs.readFileSync('./data/responseSuscribe.json', { encoding: 'utf8', flag: 'r' }));
-};
-
 module.exports = {
     createTokenAuth,
     subscribetoWebhook,
-    refreshTokens,
-    isInvalidateSomeToken,
     savePreserveData,
     tweetNotify,
     readTokenAuth,
