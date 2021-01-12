@@ -96,10 +96,20 @@ const readTokenAuth = () => {
     return JSON.parse(fs.readFileSync('./data/token.json', { encoding: 'utf8', flag: 'r' }));
 };
 
+const readRefreshData = () => {
+    return JSON.parse(fs.readFileSync('./data/refreshData.json', { encoding: 'utf8', flag: 'r' }));
+};
+
+const savefreshData = (data) => {
+    fs.writeFileSync('./data/refreshData.json', JSON.stringify(data));
+};
+
 module.exports = {
     createTokenAuth,
     subscribetoWebhook,
     savePreserveData,
     tweetNotify,
     readTokenAuth,
+    readRefreshData,
+    savefreshData,
 };
